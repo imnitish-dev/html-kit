@@ -1,7 +1,7 @@
 {
   "name": "html-scrub",
-  "version": "0.1.0",
-  "description": "Fast, safe HTML sanitizing and HTML \u2192 Markdown. Rust core, native in Node/Bun, WASM in browsers, Deno and edge runtimes.",
+  "version": "0.1.1",
+  "description": "Fast, safe HTML sanitizing and HTML → Markdown. Rust core, native in Node/Bun, WASM in browsers, Deno and edge runtimes.",
   "license": "MIT",
   "type": "module",
   "napi": {

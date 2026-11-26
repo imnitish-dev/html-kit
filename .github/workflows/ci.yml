@@ -17,7 +17,7 @@ jobs:
     name: Rust unit tests
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - uses: dtolnay/rust-toolchain@stable
       - run: cargo test
 
@@ -25,7 +25,7 @@ jobs:
     name: Vulnerability + license audit
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - uses: taiki-e/install-action@v2
         with: { tool: cargo-deny }
       - run: cargo deny check
@@ -49,8 +49,8 @@ jobs:
           - { host: ubuntu-latest, target: x86_64-unknown-linux-musl, flags: -x }
           - { host: windows-latest, target: x86_64-pc-windows-msvc }
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
         with: { node-version: 22 }
       - uses: dtolnay/rust-toolchain@stable
         with: { targets: '${{ matrix.target }}' }
@@ -61,7 +61,7 @@ jobs:
         with: { tool: cargo-zigbuild }
       - run: npm ci
       - run: npx napi build --platform --release --features napi --output-dir native --target ${{ matrix.target }} ${{ matrix.flags }}
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: native-${{ matrix.target }}
           path: native/*.node
@@ -71,13 +71,13 @@ jobs:
     name: Build WASM
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - uses: dtolnay/rust-toolchain@stable
         with: { targets: wasm32-unknown-unknown }
       - uses: taiki-e/install-action@v2
         with: { tool: wasm-bindgen-cli@0.2.130 }
       - run: npm run build:wasm
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: wasm
           path: |
@@ -100,12 +100,12 @@ jobs:
           - { host: ubuntu-24.04-arm, node: 22 }
           - { host: windows-latest, node: 22 }
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
         with: { node-version: '${{ matrix.node }}' }
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v8
         with: { path: native, pattern: native-*, merge-multiple: true }
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v8
         with: { path: wasm, name: wasm }
       - run: npm test
         env: { HTML_SCRUB_EXPECT: native }
@@ -118,10 +118,10 @@ jobs:
     runs-on: ubuntu-latest
     container: node:22-alpine
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/download-artifact@v4
+      - uses: actions/checkout@v7
+      - uses: actions/download-artifact@v8
         with: { path: native, pattern: native-*, merge-multiple: true }
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v8
         with: { path: wasm, name: wasm }
       - run: npm test
         env: { HTML_SCRUB_EXPECT: native }
@@ -131,11 +131,11 @@ jobs:
     needs: [native, wasm]
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - uses: oven-sh/setup-bun@v2
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v8
         with: { path: native, pattern: native-*, merge-multiple: true }
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v8
         with: { path: wasm, name: wasm }
       - run: bun -e "import {sanitize, toMarkdown, backend} from 'html-scrub'; if (backend !== 'native' || sanitize('<b onclick=x>a</b>') !== '<b>a</b>' || toMarkdown('<del>x</del>') !== '~~x~~') process.exit(1); console.log('bun ok', backend)"
 
@@ -144,12 +144,12 @@ jobs:
     needs: [native, wasm]
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
         with: { node-version: 22 }
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v8
         with: { path: native, pattern: native-*, merge-multiple: true }
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v8
         with: { path: wasm, name: wasm }
       - working-directory: security
         run: |
@@ -162,19 +162,19 @@ jobs:
     needs: [rust, audit, test, test-musl, test-bun, security]
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
         with: { node-version: 22 }
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v8
         with: { path: native, pattern: native-*, merge-multiple: true }
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v8
         with: { path: wasm, name: wasm }
       - uses: taiki-e/install-action@v2
         with: { tool: cargo-about }
       - name: Third-party notices for the Rust code inside the binaries
         run: cargo about generate --features napi,wasm about.hbs > THIRD-PARTY-LICENSES.md
       - run: ls native wasm && npm pack && tar -tzf html-scrub-*.tgz
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: html-scrub-tarball
           path: html-scrub-*.tgz

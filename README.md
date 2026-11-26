@@ -1,5 +1,10 @@
 # html-scrub
 
+[![npm](https://img.shields.io/npm/v/html-scrub)](https://www.npmjs.com/package/html-scrub)
+[![CI](https://github.com/imnitish-dev/html-scrub/actions/workflows/ci.yml/badge.svg)](https://github.com/imnitish-dev/html-scrub/actions/workflows/ci.yml)
+[![runtime deps: 0](https://img.shields.io/badge/runtime%20deps-0-brightgreen)](package.json)
+[![license: MIT](https://img.shields.io/npm/l/html-scrub)](LICENSE)
+
 > Fast, safe HTML sanitizing and HTML → Markdown for every JavaScript runtime.
 
 - **Plug and play.** `npm install html-scrub`, import, done. No `init()`, no bundler plugin, no config.
@@ -11,7 +16,12 @@
 
 ```sh
 npm install html-scrub
+yarn add html-scrub
+pnpm add html-scrub
+bun add html-scrub
 ```
+
+All four are tested installing from the npm registry. Deno should work with `import { sanitize } from 'npm:html-scrub'`, but isn't tested yet.
 
 ## Usage
 
@@ -97,11 +107,34 @@ Real pages (Wikipedia article 685 KB, MDN docs page 221 KB, 1 KB user comment). 
 
 The outputs are comparable in size: html-scrub keeps slightly *more* content than `sanitize-html` and `turndown` on the same page, so the speed doesn't come from doing less.
 
-## Security
+## Security and maintenance
 
-- The sanitizer is [ammonia](https://github.com/rust-ammonia/ammonia), which uses html5ever, a spec-compliant HTML5 parser, so it sees the HTML the same way a browser does.
-- Every CI run checks `sanitize()` against DOMPurify's suite of known XSS bypasses plus 50,000 randomly generated hostile inputs. Each output is (1) re-parsed like a browser would and checked for anything that can run code, (2) sanitized again to confirm it doesn't change (a sign of mutation XSS), and (3) rendered in real Chromium, watching for any `alert()`. See [`security/xss.js`](security/xss.js).
-- Found a bypass? Please open a private security advisory on GitHub rather than a public issue.
+`sanitize()` is a security boundary, so it is tested like one, and the project is kept up to date automatically.
+
+**XSS testing**, on every CI run ([`security/xss.js`](security/xss.js)):
+
+- DOMPurify's suite of known XSS bypasses, plus 50,000 randomly generated hostile inputs (obfuscated `javascript:` URLs, SVG/MathML tricks, broken nesting, invisible Unicode characters).
+- Each output is re-parsed the way a browser does and checked for anything that can run code, sanitized a second time to confirm it doesn't change (a sign of mutation XSS), and rendered in real Chromium while watching for any `alert()`.
+
+**Vulnerability scanning**, on every push and every Monday, so new advisories are caught even when the code hasn't changed:
+
+- [`cargo deny`](deny.toml): Rust dependencies against the [RustSec](https://rustsec.org) advisory database, plus license and source checks.
+- `npm audit` on all JavaScript tooling.
+- GitHub CodeQL code scanning, secret scanning with push protection, and Dependabot alerts.
+
+**Dependency updates** with [Renovate](renovate.json):
+
+- Updates wait 3 days after release before they're proposed, a guard against hijacked package versions.
+- Minor and patch updates merge automatically, but only after the full CI (all platforms, XSS suite, audits) passes.
+- Security fixes are opened immediately. GitHub Actions are pinned to exact commits.
+
+**Supply chain:**
+
+- Zero runtime dependencies: installing html-scrub installs nothing else.
+- Every release is the tarball CI built and tested on all platforms.
+- Only permissive licenses are allowed in the Rust code (enforced by `cargo deny`). Third-party notices for the bundled Rust code ship inside the npm package as `THIRD-PARTY-LICENSES.md`.
+
+Found a bypass? Please report it privately; see [SECURITY.md](SECURITY.md).
 
 ## When not to use it
 

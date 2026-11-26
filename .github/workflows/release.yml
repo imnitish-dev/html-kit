@@ -21,12 +21,12 @@ jobs:
       contents: write # GitHub release
       id-token: write # npm trusted publishing + provenance, no token stored anywhere
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
         with: { node-version: 24, registry-url: 'https://registry.npmjs.org' }
       - name: Tag must match package.json version
         run: test "v$(node -p "require('./package.json').version")" = "$GITHUB_REF_NAME"
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v8
         with: { name: html-scrub-tarball }
       - run: npm publish ./html-scrub-*.tgz --provenance --access public
       - run: gh release create "$GITHUB_REF_NAME" ./html-scrub-*.tgz --generate-notes
