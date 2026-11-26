@@ -1,0 +1,156 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  rust:
+    name: Rust unit tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - run: cargo test
+
+  native:
+    name: Build ${{ matrix.target }}
+    runs-on: ${{ matrix.host }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { host: macos-latest, target: aarch64-apple-darwin }
+          - { host: macos-latest, target: x86_64-apple-darwin }
+          - { host: ubuntu-latest, target: x86_64-unknown-linux-gnu, flags: --use-napi-cross }
+          - { host: ubuntu-24.04-arm, target: aarch64-unknown-linux-gnu }
+          - { host: ubuntu-latest, target: x86_64-unknown-linux-musl, flags: -x }
+          - { host: windows-latest, target: x86_64-pc-windows-msvc }
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22 }
+      - uses: dtolnay/rust-toolchain@stable
+        with: { targets: '${{ matrix.target }}' }
+      - if: matrix.flags == '-x'
+        uses: mlugg/setup-zig@v2
+      - if: matrix.flags == '-x'
+        uses: taiki-e/install-action@v2
+        with: { tool: cargo-zigbuild }
+      - run: npm ci
+      - run: npx napi build --platform --release --features napi --output-dir native --target ${{ matrix.target }} ${{ matrix.flags }}
+      - uses: actions/upload-artifact@v4
+        with:
+          name: native-${{ matrix.target }}
+          path: native/*.node
+          if-no-files-found: error
+
+  wasm:
+    name: Build WASM
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with: { targets: wasm32-unknown-unknown }
+      - uses: taiki-e/install-action@v2
+        with: { tool: wasm-bindgen-cli@0.2.130 }
+      - run: npm run build:wasm
+      - uses: actions/upload-artifact@v4
+        with:
+          name: wasm
+          path: |
+            wasm/html_kit.js
+            wasm/html_kit_bg.wasm
+          if-no-files-found: error
+
+  test:
+    name: Test ${{ matrix.host }} / Node ${{ matrix.node }}
+    needs: [native, wasm]
+    runs-on: ${{ matrix.host }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { host: macos-latest, node: 24 }
+          - { host: ubuntu-latest, node: 20 }
+          - { host: ubuntu-latest, node: 22 }
+          - { host: ubuntu-latest, node: 24 }
+          - { host: ubuntu-24.04-arm, node: 22 }
+          - { host: windows-latest, node: 22 }
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: '${{ matrix.node }}' }
+      - uses: actions/download-artifact@v4
+        with: { path: native, pattern: native-*, merge-multiple: true }
+      - uses: actions/download-artifact@v4
+        with: { path: wasm, name: wasm }
+      - run: npm test
+        env: { HTML_KIT_EXPECT: native }
+      - run: npm test
+        env: { HTML_KIT_FORCE_WASM: '1', HTML_KIT_EXPECT: wasm }
+
+  test-musl:
+    name: Test Alpine (musl)
+    needs: [native, wasm]
+    runs-on: ubuntu-latest
+    container: node:22-alpine
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with: { path: native, pattern: native-*, merge-multiple: true }
+      - uses: actions/download-artifact@v4
+        with: { path: wasm, name: wasm }
+      - run: npm test
+        env: { HTML_KIT_EXPECT: native }
+
+  test-bun:
+    name: Test Bun
+    needs: [native, wasm]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+      - uses: actions/download-artifact@v4
+        with: { path: native, pattern: native-*, merge-multiple: true }
+      - uses: actions/download-artifact@v4
+        with: { path: wasm, name: wasm }
+      - run: bun -e "import {sanitize, toMarkdown, backend} from 'html-kit'; if (backend !== 'native' || sanitize('<b onclick=x>a</b>') !== '<b>a</b>' || toMarkdown('<del>x</del>') !== '~~x~~') process.exit(1); console.log('bun ok', backend)"
+
+  security:
+    name: XSS suite (known payloads + fuzzing + Chromium)
+    needs: [native, wasm]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22 }
+      - uses: actions/download-artifact@v4
+        with: { path: native, pattern: native-*, merge-multiple: true }
+      - uses: actions/download-artifact@v4
+        with: { path: wasm, name: wasm }
+      - working-directory: security
+        run: |
+          npm install
+          npx playwright-core install --with-deps chromium
+          node xss.js 50000
+
+  pack:
+    name: npm pack
+    needs: [rust, test, test-musl, test-bun, security]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22 }
+      - uses: actions/download-artifact@v4
+        with: { path: native, pattern: native-*, merge-multiple: true }
+      - uses: actions/download-artifact@v4
+        with: { path: wasm, name: wasm }
+      - run: ls native wasm && npm pack
+      - uses: actions/upload-artifact@v4
+        with:
+          name: html-kit-tarball
+          path: html-kit-*.tgz

@@ -48,7 +48,8 @@
     "native/*.node",
     "wasm/html_kit.js",
     "wasm/html_kit_bg.wasm",
-    "index.d.ts"
+    "index.d.ts",
+    "LICENSE"
   ],
   "keywords": [
     "html",
@@ -64,5 +65,11 @@
     "napi",
     "edge",
     "cloudflare-workers"
-  ]
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/imnitish-dev/html-kit.git"
+  },
+  "homepage": "https://github.com/imnitish-dev/html-kit#readme",
+  "bugs": "https://github.com/imnitish-dev/html-kit/issues"
 }
