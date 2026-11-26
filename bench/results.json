@@ -8,168 +8,168 @@
       "page": "small (user comment)",
       "kb": 1,
       "lib": "html-kit (native)",
-      "ms": 0.01883247909657008
+      "ms": 0.019557571910976675
     },
     {
       "suite": "sanitize",
       "page": "small (user comment)",
       "kb": 1,
       "lib": "html-kit (wasm)",
-      "ms": 0.030649644469871885
+      "ms": 0.028006731679082884
     },
     {
       "suite": "sanitize",
       "page": "small (user comment)",
       "kb": 1,
       "lib": "sanitize-html",
-      "ms": 0.04133995681411051
+      "ms": 0.04139580458659895
     },
     {
       "suite": "sanitize",
       "page": "small (user comment)",
       "kb": 1,
       "lib": "DOMPurify + jsdom",
-      "ms": 0.27079116281588456
+      "ms": 0.25892001052813257
     },
     {
       "suite": "sanitize",
       "page": "large (Wikipedia article)",
       "kb": 685,
       "lib": "html-kit (native)",
-      "ms": 12.652273109243698
+      "ms": 12.748654305084743
     },
     {
       "suite": "sanitize",
       "page": "large (Wikipedia article)",
       "kb": 685,
       "lib": "html-kit (wasm)",
-      "ms": 17.859610788235294
+      "ms": 17.64990783529412
     },
     {
       "suite": "sanitize",
       "page": "large (Wikipedia article)",
       "kb": 685,
       "lib": "sanitize-html",
-      "ms": 20.551418364864855
+      "ms": 19.33173717948718
     },
     {
       "suite": "sanitize",
       "page": "large (Wikipedia article)",
       "kb": 685,
       "lib": "DOMPurify + jsdom",
-      "ms": 127.31977083333338
+      "ms": 127.07096175
     },
     {
       "suite": "sanitize",
       "page": "medium (MDN docs page)",
       "kb": 221,
       "lib": "html-kit (native)",
-      "ms": 3.8992229428571448
+      "ms": 3.742458852867832
     },
     {
       "suite": "sanitize",
       "page": "medium (MDN docs page)",
       "kb": 221,
       "lib": "html-kit (wasm)",
-      "ms": 4.985735880398666
+      "ms": 5.1566192749140916
     },
     {
       "suite": "sanitize",
       "page": "medium (MDN docs page)",
       "kb": 221,
       "lib": "sanitize-html",
-      "ms": 6.19926119008264
+      "ms": 6.050505374999991
     },
     {
       "suite": "sanitize",
       "page": "medium (MDN docs page)",
       "kb": 221,
       "lib": "DOMPurify + jsdom",
-      "ms": 39.17312500000004
+      "ms": 40.146243421052674
     },
     {
       "suite": "HTML → Markdown",
       "page": "small (user comment)",
       "kb": 1,
       "lib": "html-kit (native)",
-      "ms": 0.01624421483414736
+      "ms": 0.01658678797797292
     },
     {
       "suite": "HTML → Markdown",
       "page": "small (user comment)",
       "kb": 1,
       "lib": "html-kit (wasm)",
-      "ms": 0.025873250030184432
+      "ms": 0.025662952011086256
     },
     {
       "suite": "HTML → Markdown",
       "page": "small (user comment)",
       "kb": 1,
       "lib": "turndown",
-      "ms": 0.1345372645739909
+      "ms": 0.14008915847964143
     },
     {
       "suite": "HTML → Markdown",
       "page": "small (user comment)",
       "kb": 1,
       "lib": "node-html-markdown",
-      "ms": 0.08509112825458041
+      "ms": 0.08655301673302171
     },
     {
       "suite": "HTML → Markdown",
       "page": "large (Wikipedia article)",
       "kb": 685,
       "lib": "html-kit (native)",
-      "ms": 15.317353744897984
+      "ms": 15.830039473684232
     },
     {
       "suite": "HTML → Markdown",
       "page": "large (Wikipedia article)",
       "kb": 685,
       "lib": "html-kit (wasm)",
-      "ms": 21.360317492957748
+      "ms": 21.934722231884074
     },
     {
       "suite": "HTML → Markdown",
       "page": "large (Wikipedia article)",
       "kb": 685,
       "lib": "turndown",
-      "ms": 57.97605607692304
+      "ms": 60.95801831999997
     },
     {
       "suite": "HTML → Markdown",
       "page": "large (Wikipedia article)",
       "kb": 685,
       "lib": "node-html-markdown",
-      "ms": 512.3858227500004
+      "ms": 520.0974166666662
     },
     {
       "suite": "HTML → Markdown",
       "page": "medium (MDN docs page)",
       "kb": 221,
       "lib": "html-kit (native)",
-      "ms": 3.476109664351851
+      "ms": 3.5871326563245884
     },
     {
       "suite": "HTML → Markdown",
       "page": "medium (MDN docs page)",
       "kb": 221,
       "lib": "html-kit (wasm)",
-      "ms": 4.8974898208469
+      "ms": 4.961008112211221
     },
     {
       "suite": "HTML → Markdown",
       "page": "medium (MDN docs page)",
       "kb": 221,
       "lib": "turndown",
-      "ms": 17.502978686046507
+      "ms": 17.87621825000003
     },
     {
       "suite": "HTML → Markdown",
       "page": "medium (MDN docs page)",
       "kb": 221,
       "lib": "node-html-markdown",
-      "ms": 35.11705718604647
+      "ms": 35.33896025581398
     }
   ]
 }

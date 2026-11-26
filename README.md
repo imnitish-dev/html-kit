@@ -3,7 +3,7 @@
 > Fast, safe HTML sanitizing and HTML → Markdown for every JavaScript runtime.
 
 - **Plug and play.** `npm install html-kit`, import, done. No `init()`, no bundler plugin, no config.
-- **Fast.** Rust core: 1.6–14× faster than `sanitize-html` / `DOMPurify`, 3.8–33× faster than `turndown` / `node-html-markdown` ([benchmarks](#benchmarks)).
+- **Fast.** Rust core: 1.5–14× faster than `sanitize-html` / `DOMPurify`, 3.8–32× faster than `turndown` / `node-html-markdown` ([benchmarks](#benchmarks)).
 - **Safe by default.** Built on [ammonia](https://github.com/rust-ammonia/ammonia) and [html5ever](https://github.com/servo/html5ever), the HTML parser from Servo. Our own code contains no `unsafe`.
 - **Runs everywhere.** Native addon in Node and Bun, WebAssembly in browsers, Deno and edge runtimes. The right one is picked automatically.
 
@@ -81,19 +81,19 @@ Real pages (Wikipedia article 685 KB, MDN docs page 221 KB, 1 KB user comment). 
 
 | Library | 1 KB | 221 KB | 685 KB |
 |---|---|---|---|
-| **html-kit (native)** | **0.019 ms** | **3.9 ms** | **12.7 ms** |
-| html-kit (wasm) | 0.031 ms | 5.0 ms | 17.9 ms |
-| sanitize-html | 0.041 ms | 6.2 ms | 20.6 ms |
-| DOMPurify + jsdom | 0.271 ms | 39.2 ms | 127.3 ms |
+| **html-kit (native)** | **0.019 ms** | **3.7 ms** | **12.6 ms** |
+| html-kit (wasm) | 0.027 ms | 5.0 ms | 17.0 ms |
+| sanitize-html | 0.039 ms | 6.1 ms | 19.0 ms |
+| DOMPurify + jsdom | 0.252 ms | 40.7 ms | 124.4 ms |
 
 **HTML → Markdown**
 
 | Library | 1 KB | 221 KB | 685 KB |
 |---|---|---|---|
-| **html-kit (native)** | **0.016 ms** | **3.5 ms** | **15.3 ms** |
-| html-kit (wasm) | 0.026 ms | 4.9 ms | 21.4 ms |
-| turndown | 0.135 ms | 17.5 ms | 58.0 ms |
-| node-html-markdown | 0.085 ms | 35.1 ms | 512.4 ms |
+| **html-kit (native)** | **0.016 ms** | **3.5 ms** | **15.7 ms** |
+| html-kit (wasm) | 0.026 ms | 5.0 ms | 21.9 ms |
+| turndown | 0.135 ms | 17.4 ms | 60.1 ms |
+| node-html-markdown | 0.086 ms | 35.0 ms | 508.2 ms |
 
 The outputs are comparable in size: html-kit keeps slightly *more* content than `sanitize-html` and `turndown` on the same page, so the speed doesn't come from doing less.
 

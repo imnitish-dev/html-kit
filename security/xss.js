@@ -25,6 +25,7 @@ const ATTRS = [
   'href="java\u0000script:alert(1)"', 'href="&#x6A;&#x61;&#x76;&#x61;&#x73;&#x63;&#x72;&#x69;&#x70;&#x74;:alert(1)"', 'href="vbscript:msgbox(1)"',
   'href="data:text/html,<script>alert(1)</script>"', 'src="javascript:alert(1)"', 'src=x', 'action="javascript:alert(1)"',
   'formaction="javascript:alert(1)"', 'xlink:href="javascript:alert(1)"', 'srcdoc="<script>alert(1)</script>"', 'data="javascript:alert(1)"',
+  ...['\u2028', '\u2029', '\u00a0', '\u2000', '\u0001', '\ufeff', '\u200b', '&#x2028;', '&#xfeff;', '&#11;'].map((c) => `href="${c}javascript:alert(1)"`),
   'style="background:url(javascript:alert(1))"', 'style="x:expression(alert(1))"', 'encoding="text/html"', 'id=x', 'class=y', 'title="</p><img src=x onerror=alert(1)>"',
 ];
 const TEXT = ['<!--', '-->', '<![CDATA[', ']]>', '</', '</p>', '&lt;img src=x onerror=alert(1)&gt;', '"', "'", '>', '<', 'alert(1)', '<script>alert(1)</script>', '<img src=x onerror=alert(1)>', '`', '&', 'hello'];
@@ -56,7 +57,7 @@ function dangers(html) {
   for (const el of div.querySelectorAll('*')) {
     if (EXEC_TAGS.has(el.tagName.toUpperCase())) found.push(`<${el.tagName.toLowerCase()}>`);
     for (const { name, value } of el.attributes) {
-      const v = value.replace(/[\s\u0000-\u001f]/g, '').toLowerCase();
+      const v = value.replace(/[\s\u0000-\u001f\u007f-\u009f\u00ad\u180e\u200b-\u200f\u2060-\u2064\ufeff]/g, '').toLowerCase(); // strictest reading
       if (name.startsWith('on') || name === 'srcdoc') found.push(`${name}=`);
       if (URL_ATTRS.has(name) && BAD_URL.test(v)) found.push(`${name}=${v.slice(0, 20)}`);
       if (name === 'style' && /javascript:|expression\(/.test(v)) found.push('style=');

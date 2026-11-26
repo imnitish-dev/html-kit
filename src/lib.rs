@@ -10,6 +10,25 @@ use htmd::Element;
 /// and ammonia panics on that config, so we reject it up front.
 const CODE_TAGS: [&str; 2] = ["script", "style"];
 const CODE_SCHEMES: [&str; 2] = ["javascript", "vbscript"];
+const URL_ATTRS: [&str; 12] = ["href", "src", "action", "formaction", "cite", "poster", "background", "longdesc", "data", "srcset", "ping", "xlink:href"];
+
+/// Defense in depth on top of ammonia's scheme check: drop a URL attribute that spells
+/// `javascript:`/`vbscript:` once all Unicode whitespace, control and zero-width characters are removed.
+/// Modern browsers already treat e.g. `\u{2028}javascript:` as a harmless relative URL;
+/// older ones didn't, and DOMPurify strips these too.
+fn hides_code_url(attr: &str, value: &str) -> bool {
+  if !URL_ATTRS.contains(&attr) {
+    return false;
+  }
+  let squashed: String = value.chars().filter(|c| !c.is_whitespace() && !c.is_control() && !matches!(c, '\u{200b}'..='\u{200f}' | '\u{2060}'..='\u{2064}' | '\u{feff}' | '\u{180e}' | '\u{ad}')).take(11).collect::<String>().to_ascii_lowercase();
+  CODE_SCHEMES.iter().any(|s| squashed.starts_with(s) && squashed[s.len()..].starts_with(':'))
+}
+
+fn base_builder<'a>() -> ammonia::Builder<'a> {
+  let mut b = ammonia::Builder::default();
+  b.attribute_filter(|_, attr, value| if hides_code_url(attr, value) { None } else { Some(value.into()) });
+  b
+}
 
 /// Sanitize untrusted HTML. Every option replaces ammonia's default list when given.
 ///
@@ -25,7 +44,8 @@ pub fn sanitize(
   schemes: Option<Vec<String>>,
 ) -> Result<String, String> {
   if tags.is_none() && attributes.is_none() && schemes.is_none() {
-    return Ok(ammonia::clean(html));
+    static DEFAULT: LazyLock<ammonia::Builder<'static>> = LazyLock::new(base_builder);
+    return Ok(DEFAULT.clean(html).to_string());
   }
   let lower = |v: Vec<String>| v.into_iter().map(|s| s.trim().to_ascii_lowercase()).collect::<Vec<_>>();
   let tags = tags.map(lower);
@@ -61,7 +81,7 @@ pub fn sanitize(
     }
   }
 
-  let mut b = ammonia::Builder::default();
+  let mut b = base_builder();
   if let Some(tags) = &tags {
     b.tags(tags.iter().map(String::as_str).collect());
   }
@@ -203,6 +223,17 @@ mod tests {
     let out = sanitize(r#"<p onclick="x()">hi<script>alert(1)</script><a href="javascript:alert(1)">l</a><img src=x onerror=alert(1)></p>"#, None, None, None).unwrap();
     assert!(!out.contains("script") && !out.contains("onclick") && !out.contains("onerror") && !out.contains("javascript:"), "{out}");
     assert!(out.contains("<p>hi"));
+  }
+
+  #[test]
+  fn hidden_javascript_urls_are_removed() {
+    for prefix in ["\u{2028}", "\u{2029}", "\u{a0}", "\u{2000}", "\u{1}", "\u{feff}"] {
+      let out = sanitize(&format!("<a href='{prefix}javascript:alert(1)'>x</a><a href='java{prefix}script:alert(1)'>y</a>"), None, None, None).unwrap();
+      assert!(!out.contains("script:"), "{prefix:?}: {out}");
+    }
+    // Not code: ordinary links and text mentioning javascript stay.
+    let out = sanitize(r#"<a href="https://x.dev/javascript:intro" title="javascript: the good parts">ok</a>"#, None, None, None).unwrap();
+    assert!(out.contains("https://x.dev/javascript:intro") && out.contains("title="), "{out}");
   }
 
   #[test]

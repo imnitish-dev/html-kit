@@ -12,9 +12,12 @@ const require = createRequire(import.meta.url);
 const root = fileURLToPath(new URL('..', import.meta.url));
 
 // Our two engines, loaded side by side.
-const native = require(`${root}native/html-kit.${process.platform}-${process.arch}.node`);
-const wasm = await import(`${root}wasm/html_kit.js`);
-wasm.initSync({ module: fs.readFileSync(`${root}wasm/html_kit_bg.wasm`) });
+// Both go through the same public wrapper users get.
+const { wrap } = await import(`${root}lib/wrap.js`);
+const native = wrap(require(`${root}native/html-kit.${process.platform}-${process.arch}.node`));
+const wasmRaw = await import(`${root}wasm/html_kit.js`);
+wasmRaw.initSync({ module: fs.readFileSync(`${root}wasm/html_kit_bg.wasm`) });
+const wasm = wrap(wasmRaw);
 
 const DOMPurify = createDOMPurify(new JSDOM('').window);
 const turndown = new TurndownService();
