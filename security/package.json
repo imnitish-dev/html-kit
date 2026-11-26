@@ -1,0 +1,10 @@
+{
+  "name": "html-kit-security",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "html-kit": "file:..",
+    "jsdom": "latest",
+    "playwright-core": "latest"
+  }
+}

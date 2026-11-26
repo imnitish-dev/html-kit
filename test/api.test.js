@@ -16,7 +16,11 @@ const XSS = [
   '<object data="data:text/html,<script>alert(1)</script>"></object>',
 ];
 
-test(`backend is ${backend}`, () => assert.ok(['native', 'wasm'].includes(backend)));
+test(`backend is ${backend}`, () => {
+  assert.ok(['native', 'wasm'].includes(backend));
+  // CI sets this so a missing or broken native binary fails loudly instead of silently using WASM.
+  if (process.env.HTML_KIT_EXPECT) assert.equal(backend, process.env.HTML_KIT_EXPECT);
+});
 
 test('sanitize removes every XSS vector', () => {
   for (const x of XSS) {
@@ -33,6 +37,25 @@ test('sanitize keeps safe content', () => {
 
 test('sanitize allowedTags', () => {
   assert.equal(sanitize('<b>a</b><i>b</i>', { allowedTags: ['b'] }), '<b>a</b>b');
+});
+
+test('sanitize allowedAttributes and allowedSchemes', () => {
+  const html = '<a href="https://x.dev" class="c" title="t">l</a><a href="mailto:a@b.c">m</a><img src="https://x.dev/a.png" alt="a">';
+  const out = sanitize(html, { allowedAttributes: { a: ['href'], '*': ['class'] }, allowedSchemes: ['https'] });
+  assert.match(out, /href="https:\/\/x\.dev"/);
+  assert.match(out, /class="c"/);
+  assert.doesNotMatch(out, /title=|mailto|src=/);
+});
+
+test('unsafe options throw instead of crashing', () => {
+  assert.throws(() => sanitize('x', { allowedTags: ['script'] }), /runs code/);
+  assert.throws(() => sanitize('x', { allowedAttributes: { a: ['onclick'] } }), /event handler/);
+  assert.throws(() => sanitize('x', { allowedSchemes: ['javascript'] }), /run code/);
+  assert.equal(sanitize('<b>still works</b>'), '<b>still works</b>');
+});
+
+test('toMarkdown strikethrough', () => {
+  assert.equal(toMarkdown('<p><del>old</del> new</p>'), '~~old~~ new');
 });
 
 test('toMarkdown', () => {

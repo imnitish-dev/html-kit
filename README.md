@@ -33,15 +33,28 @@ CommonJS works too: `const { sanitize } = require('html-kit')`.
 
 Returns HTML with everything that can run code removed: `<script>`, `<iframe>`, `<object>`, `<form>`, `on*` event handlers, `javascript:` URLs, inline `style`, and more. Safe text and formatting are kept. Links get `rel="noopener noreferrer"`.
 
-- `options.allowedTags` (`string[]`): replace the default tag allowlist. Removed tags keep their text.
+Every option replaces the default list when given:
+
+| Option | Type | Example |
+|---|---|---|
+| `allowedTags` | `string[]` | `['p', 'b', 'a']`. Removed tags keep their text. |
+| `allowedAttributes` | `Record<string, string[]>` | `{ a: ['href', 'title'], '*': ['class'] }`. `'*'` means any tag. |
+| `allowedSchemes` | `string[]` | `['https', 'mailto']`. URL schemes allowed in links and images. |
 
 ```js
 sanitize('<b>a</b><i>b</i>', { allowedTags: ['b'] }); //=> '<b>a</b>b'
+
+sanitize('<a href="https://x.dev" class="btn" title="t">x</a>', {
+  allowedAttributes: { a: ['href'], '*': ['class'] },
+});
+//=> '<a href="https://x.dev" class="btn" rel="noopener noreferrer">x</a>'
 ```
+
+Options that would make the output unsafe throw an error instead of being applied: allowing `script` or `style`, `on*` event handler attributes, or `javascript:` / `vbscript:` URLs.
 
 ### `toMarkdown(html)`
 
-Converts HTML to CommonMark Markdown. `<script>`, `<style>`, `<head>`, `<svg>`, `<iframe>`, `<noscript>` and `<template>` are dropped. Useful for feeding web pages to LLMs, search indexes and docs.
+Converts HTML to Markdown: CommonMark plus GitHub-style tables and ~~strikethrough~~, code blocks keep their language. `<script>`, `<style>`, `<head>`, `<svg>`, `<iframe>`, `<noscript>` and `<template>` are dropped. Useful for feeding web pages to LLMs, search indexes and docs.
 
 ### `backend`
 
@@ -49,11 +62,13 @@ Converts HTML to CommonMark Markdown. `<script>`, `<style>`, `<head>`, `<svg>`, 
 
 ## Runtimes
 
+Prebuilt native addons, each tested on its real platform in CI: macOS (Apple Silicon), Linux x64 and ARM64 (glibc), Alpine Linux (musl), Windows x64. macOS Intel is built but not tested on Intel hardware. Anything else (or an older Linux whose glibc is too old for the prebuilt binary) automatically falls back to WebAssembly.
+
 | Runtime | Engine | Verified |
 |---|---|---|
-| Node.js ≥ 20.19 (ESM and CommonJS) | native addon | ✅ test suite |
-| Node.js on a platform without a prebuilt addon | WebAssembly (automatic fallback) | ✅ test suite |
-| Bun | native addon | ✅ |
+| Node.js 20, 22, 24 (ESM and CommonJS) | native addon | ✅ CI on macOS, Linux, Alpine, Windows |
+| Node.js without a matching prebuilt addon | WebAssembly (automatic fallback) | ✅ CI |
+| Bun | native addon | ✅ CI |
 | Browsers via Vite (dev and production build) | WebAssembly | ✅ Chromium |
 | Cloudflare Workers (`wrangler dev`) | WebAssembly | ✅ |
 | Deno, Safari, Vercel Edge, webpack | WebAssembly | ⏳ not tested yet |
@@ -81,6 +96,12 @@ Real pages (Wikipedia article 685 KB, MDN docs page 221 KB, 1 KB user comment). 
 | node-html-markdown | 0.085 ms | 35.1 ms | 512.4 ms |
 
 The outputs are comparable in size: html-kit keeps slightly *more* content than `sanitize-html` and `turndown` on the same page, so the speed doesn't come from doing less.
+
+## Security
+
+- The sanitizer is [ammonia](https://github.com/rust-ammonia/ammonia), which uses html5ever, a spec-compliant HTML5 parser, so it sees the HTML the same way a browser does.
+- Every CI run checks `sanitize()` against DOMPurify's suite of known XSS bypasses plus 50,000 randomly generated hostile inputs. Each output is (1) re-parsed like a browser would and checked for anything that can run code, (2) sanitized again to confirm it doesn't change (a sign of mutation XSS), and (3) rendered in real Chromium, watching for any `alert()`. See [`security/xss.js`](security/xss.js).
+- Found a bypass? Please open a private security advisory on GitHub rather than a public issue.
 
 ## When not to use it
 

@@ -4,3 +4,4 @@ native/*.node
 bench/fixtures/
 wasm/
 native/
+security/.cache/
