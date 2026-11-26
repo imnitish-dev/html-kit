@@ -1,0 +1,175 @@
+{
+  "node": "v24.18.0",
+  "platform": "darwin-arm64",
+  "date": "2026-11-26",
+  "results": [
+    {
+      "suite": "sanitize",
+      "page": "small (user comment)",
+      "kb": 1,
+      "lib": "html-kit (native)",
+      "ms": 0.01883247909657008
+    },
+    {
+      "suite": "sanitize",
+      "page": "small (user comment)",
+      "kb": 1,
+      "lib": "html-kit (wasm)",
+      "ms": 0.030649644469871885
+    },
+    {
+      "suite": "sanitize",
+      "page": "small (user comment)",
+      "kb": 1,
+      "lib": "sanitize-html",
+      "ms": 0.04133995681411051
+    },
+    {
+      "suite": "sanitize",
+      "page": "small (user comment)",
+      "kb": 1,
+      "lib": "DOMPurify + jsdom",
+      "ms": 0.27079116281588456
+    },
+    {
+      "suite": "sanitize",
+      "page": "large (Wikipedia article)",
+      "kb": 685,
+      "lib": "html-kit (native)",
+      "ms": 12.652273109243698
+    },
+    {
+      "suite": "sanitize",
+      "page": "large (Wikipedia article)",
+      "kb": 685,
+      "lib": "html-kit (wasm)",
+      "ms": 17.859610788235294
+    },
+    {
+      "suite": "sanitize",
+      "page": "large (Wikipedia article)",
+      "kb": 685,
+      "lib": "sanitize-html",
+      "ms": 20.551418364864855
+    },
+    {
+      "suite": "sanitize",
+      "page": "large (Wikipedia article)",
+      "kb": 685,
+      "lib": "DOMPurify + jsdom",
+      "ms": 127.31977083333338
+    },
+    {
+      "suite": "sanitize",
+      "page": "medium (MDN docs page)",
+      "kb": 221,
+      "lib": "html-kit (native)",
+      "ms": 3.8992229428571448
+    },
+    {
+      "suite": "sanitize",
+      "page": "medium (MDN docs page)",
+      "kb": 221,
+      "lib": "html-kit (wasm)",
+      "ms": 4.985735880398666
+    },
+    {
+      "suite": "sanitize",
+      "page": "medium (MDN docs page)",
+      "kb": 221,
+      "lib": "sanitize-html",
+      "ms": 6.19926119008264
+    },
+    {
+      "suite": "sanitize",
+      "page": "medium (MDN docs page)",
+      "kb": 221,
+      "lib": "DOMPurify + jsdom",
+      "ms": 39.17312500000004
+    },
+    {
+      "suite": "HTML → Markdown",
+      "page": "small (user comment)",
+      "kb": 1,
+      "lib": "html-kit (native)",
+      "ms": 0.01624421483414736
+    },
+    {
+      "suite": "HTML → Markdown",
+      "page": "small (user comment)",
+      "kb": 1,
+      "lib": "html-kit (wasm)",
+      "ms": 0.025873250030184432
+    },
+    {
+      "suite": "HTML → Markdown",
+      "page": "small (user comment)",
+      "kb": 1,
+      "lib": "turndown",
+      "ms": 0.1345372645739909
+    },
+    {
+      "suite": "HTML → Markdown",
+      "page": "small (user comment)",
+      "kb": 1,
+      "lib": "node-html-markdown",
+      "ms": 0.08509112825458041
+    },
+    {
+      "suite": "HTML → Markdown",
+      "page": "large (Wikipedia article)",
+      "kb": 685,
+      "lib": "html-kit (native)",
+      "ms": 15.317353744897984
+    },
+    {
+      "suite": "HTML → Markdown",
+      "page": "large (Wikipedia article)",
+      "kb": 685,
+      "lib": "html-kit (wasm)",
+      "ms": 21.360317492957748
+    },
+    {
+      "suite": "HTML → Markdown",
+      "page": "large (Wikipedia article)",
+      "kb": 685,
+      "lib": "turndown",
+      "ms": 57.97605607692304
+    },
+    {
+      "suite": "HTML → Markdown",
+      "page": "large (Wikipedia article)",
+      "kb": 685,
+      "lib": "node-html-markdown",
+      "ms": 512.3858227500004
+    },
+    {
+      "suite": "HTML → Markdown",
+      "page": "medium (MDN docs page)",
+      "kb": 221,
+      "lib": "html-kit (native)",
+      "ms": 3.476109664351851
+    },
+    {
+      "suite": "HTML → Markdown",
+      "page": "medium (MDN docs page)",
+      "kb": 221,
+      "lib": "html-kit (wasm)",
+      "ms": 4.8974898208469
+    },
+    {
+      "suite": "HTML → Markdown",
+      "page": "medium (MDN docs page)",
+      "kb": 221,
+      "lib": "turndown",
+      "ms": 17.502978686046507
+    },
+    {
+      "suite": "HTML → Markdown",
+      "page": "medium (MDN docs page)",
+      "kb": 221,
+      "lib": "node-html-markdown",
+      "ms": 35.11705718604647
+    }
+  ]
+}

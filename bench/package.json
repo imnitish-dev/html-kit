@@ -1,0 +1,12 @@
+{
+  "name": "html-kit-bench",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "dompurify": "latest",
+    "jsdom": "latest",
+    "node-html-markdown": "latest",
+    "sanitize-html": "latest",
+    "turndown": "latest"
+  }
+}
