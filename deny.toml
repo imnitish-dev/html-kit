@@ -1,0 +1,25 @@
+# cargo deny check: run in CI on every push and weekly.
+
+[advisories]
+version = 2
+yanked = "deny"
+
+[licenses]
+version = 2
+# Permissive licenses only, so html-kit stays MIT-compatible for everyone.
+allow = ["MIT", "Apache-2.0", "ISC", "Unicode-3.0"]
+confidence-threshold = 0.9
+# MPL-2.0 is per-file copyleft: fine to ship unmodified inside an MIT package.
+# Allowed only for these Servo crates (pulled in by ammonia), so new copyleft deps still fail.
+exceptions = [
+  { name = "cssparser", allow = ["MPL-2.0"] },
+  { name = "dtoa-short", allow = ["MPL-2.0"] },
+]
+
+[bans]
+multiple-versions = "warn"
+wildcards = "deny"
+
+[sources]
+unknown-registry = "deny"
+unknown-git = "deny"
