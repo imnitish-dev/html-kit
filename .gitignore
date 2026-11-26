@@ -5,3 +5,4 @@ bench/fixtures/
 wasm/
 native/
 security/.cache/
+THIRD-PARTY-LICENSES.md
