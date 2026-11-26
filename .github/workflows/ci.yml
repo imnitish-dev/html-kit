@@ -29,6 +29,8 @@ jobs:
       - uses: taiki-e/install-action@v2
         with: { tool: cargo-deny }
       - run: cargo deny check
+      - name: TypeScript types resolve correctly in every module mode
+        run: npx --yes @arethetypeswrong/cli --pack .
       - name: npm audit (package, bench, security)
         run: |
           for d in . bench security; do

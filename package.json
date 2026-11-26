@@ -1,7 +1,7 @@
 {
   "name": "html-scrub",
   "version": "0.1.1",
-  "description": "Fast, safe HTML sanitizing and HTML → Markdown. Rust core, native in Node/Bun, WASM in browsers, Deno and edge runtimes.",
+  "description": "Fast, safe HTML sanitizing and HTML \u2192 Markdown. Rust core, native in Node/Bun, WASM in browsers, Deno and edge runtimes.",
   "license": "MIT",
   "type": "module",
   "napi": {
@@ -31,16 +31,36 @@
   "types": "./index.d.ts",
   "exports": {
     ".": {
-      "types": "./index.d.ts",
-      "workerd": "./lib/edge.js",
-      "edge-light": "./lib/edge.js",
-      "deno": "./lib/web.js",
-      "browser": "./lib/web.js",
-      "node": {
-        "import": "./lib/node.mjs",
-        "require": "./lib/node.cjs"
+      "workerd": {
+        "types": "./index.d.ts",
+        "default": "./lib/edge.js"
       },
-      "default": "./lib/web.js"
+      "edge-light": {
+        "types": "./index.d.ts",
+        "default": "./lib/edge.js"
+      },
+      "deno": {
+        "types": "./index.d.ts",
+        "default": "./lib/web.js"
+      },
+      "browser": {
+        "types": "./index.d.ts",
+        "default": "./lib/web.js"
+      },
+      "node": {
+        "import": {
+          "types": "./index.d.ts",
+          "default": "./lib/node.mjs"
+        },
+        "require": {
+          "types": "./index.d.cts",
+          "default": "./lib/node.cjs"
+        }
+      },
+      "default": {
+        "types": "./index.d.ts",
+        "default": "./lib/web.js"
+      }
     }
   },
   "files": [
@@ -49,6 +69,7 @@
     "wasm/html_scrub.js",
     "wasm/html_scrub_bg.wasm",
     "index.d.ts",
+    "index.d.cts",
     "LICENSE",
     "THIRD-PARTY-LICENSES.md"
   ],

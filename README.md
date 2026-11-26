@@ -10,6 +10,7 @@
 - **Plug and play.** `npm install html-scrub`, import, done. No `init()`, no bundler plugin, no config.
 - **Fast.** Rust core: 1.5–14× faster than `sanitize-html` / `DOMPurify`, 3.8–32× faster than `turndown` / `node-html-markdown` ([benchmarks](#benchmarks)).
 - **Safe by default.** Built on [ammonia](https://github.com/rust-ammonia/ammonia) and [html5ever](https://github.com/servo/html5ever), the HTML parser from Servo. Our own code contains no `unsafe`.
+- **TypeScript included.** Types ship in the package and are checked in CI for ESM, CommonJS and bundler setups. No `@types/` package needed.
 - **Runs everywhere.** Native addon in Node and Bun, WebAssembly in browsers, Deno and edge runtimes. The right one is picked automatically.
 
 ## Install
@@ -36,6 +37,15 @@ toMarkdown('<h1>Title</h1><p>Some <b>bold</b> and a <a href="https://x.dev">link
 ```
 
 CommonJS works too: `const { sanitize } = require('html-scrub')`.
+
+TypeScript gets full types automatically, including the options, so typos are caught at compile time:
+
+```ts
+import { sanitize, type SanitizeOptions } from 'html-scrub';
+
+const options: SanitizeOptions = { allowedTags: ['b', 'a'], allowedAttributes: { a: ['href'] } };
+sanitize(userHtml, options);
+```
 
 ## API
 
