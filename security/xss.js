@@ -3,7 +3,7 @@
 // Optional real-browser check: set CHROME=/path/to/chrome (or install playwright's chromium).
 import fs from 'node:fs';
 import { JSDOM } from 'jsdom';
-import { sanitize, backend } from 'html-kit';
+import { sanitize, backend } from 'html-scrub';
 
 const ITERATIONS = Number(process.argv[2] ?? 50_000);
 

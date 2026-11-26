@@ -27,7 +27,7 @@ jobs:
       - name: Tag must match package.json version
         run: test "v$(node -p "require('./package.json').version")" = "$GITHUB_REF_NAME"
       - uses: actions/download-artifact@v4
-        with: { name: html-kit-tarball }
-      - run: npm publish ./html-kit-*.tgz --provenance --access public
-      - run: gh release create "$GITHUB_REF_NAME" ./html-kit-*.tgz --generate-notes
+        with: { name: html-scrub-tarball }
+      - run: npm publish ./html-scrub-*.tgz --provenance --access public
+      - run: gh release create "$GITHUB_REF_NAME" ./html-scrub-*.tgz --generate-notes
         env: { GH_TOKEN: '${{ github.token }}' }

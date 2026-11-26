@@ -1,11 +1,11 @@
 {
-  "name": "html-kit",
+  "name": "html-scrub",
   "version": "0.1.0",
   "description": "Fast, safe HTML sanitizing and HTML \u2192 Markdown. Rust core, native in Node/Bun, WASM in browsers, Deno and edge runtimes.",
   "license": "MIT",
   "type": "module",
   "napi": {
-    "binaryName": "html-kit",
+    "binaryName": "html-scrub",
     "targets": [
       "aarch64-apple-darwin",
       "x86_64-apple-darwin",
@@ -17,7 +17,7 @@
   },
   "scripts": {
     "build:native": "napi build --platform --release --features napi --output-dir native --no-js",
-    "build:wasm": "cargo build --release --target wasm32-unknown-unknown --features wasm && wasm-bindgen target/wasm32-unknown-unknown/release/html_kit.wasm --target web --out-dir wasm --out-name html_kit",
+    "build:wasm": "cargo build --release --target wasm32-unknown-unknown --features wasm && wasm-bindgen target/wasm32-unknown-unknown/release/html_scrub.wasm --target web --out-dir wasm --out-name html_scrub",
     "build": "npm run build:native && npm run build:wasm",
     "test": "node --test",
     "bench": "node bench/bench.js"
@@ -46,8 +46,8 @@
   "files": [
     "lib",
     "native/*.node",
-    "wasm/html_kit.js",
-    "wasm/html_kit_bg.wasm",
+    "wasm/html_scrub.js",
+    "wasm/html_scrub_bg.wasm",
     "index.d.ts",
     "LICENSE",
     "THIRD-PARTY-LICENSES.md"
@@ -69,8 +69,8 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/imnitish-dev/html-kit.git"
+    "url": "git+https://github.com/imnitish-dev/html-scrub.git"
   },
-  "homepage": "https://github.com/imnitish-dev/html-kit#readme",
-  "bugs": "https://github.com/imnitish-dev/html-kit/issues"
+  "homepage": "https://github.com/imnitish-dev/html-scrub#readme",
+  "bugs": "https://github.com/imnitish-dev/html-scrub/issues"
 }

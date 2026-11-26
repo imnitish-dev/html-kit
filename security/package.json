@@ -1,9 +1,9 @@
 {
-  "name": "html-kit-security",
+  "name": "html-scrub-security",
   "private": true,
   "type": "module",
   "dependencies": {
-    "html-kit": "file:..",
+    "html-scrub": "file:..",
     "jsdom": "latest",
     "playwright-core": "latest"
   }

@@ -7,14 +7,14 @@
       "suite": "sanitize",
       "page": "small (user comment)",
       "kb": 1,
-      "lib": "html-kit (native)",
+      "lib": "html-scrub (native)",
       "ms": 0.019557571910976675
     },
     {
       "suite": "sanitize",
       "page": "small (user comment)",
       "kb": 1,
-      "lib": "html-kit (wasm)",
+      "lib": "html-scrub (wasm)",
       "ms": 0.028006731679082884
     },
     {
@@ -35,14 +35,14 @@
       "suite": "sanitize",
       "page": "large (Wikipedia article)",
       "kb": 685,
-      "lib": "html-kit (native)",
+      "lib": "html-scrub (native)",
       "ms": 12.748654305084743
     },
     {
       "suite": "sanitize",
       "page": "large (Wikipedia article)",
       "kb": 685,
-      "lib": "html-kit (wasm)",
+      "lib": "html-scrub (wasm)",
       "ms": 17.64990783529412
     },
     {
@@ -63,14 +63,14 @@
       "suite": "sanitize",
       "page": "medium (MDN docs page)",
       "kb": 221,
-      "lib": "html-kit (native)",
+      "lib": "html-scrub (native)",
       "ms": 3.742458852867832
     },
     {
       "suite": "sanitize",
       "page": "medium (MDN docs page)",
       "kb": 221,
-      "lib": "html-kit (wasm)",
+      "lib": "html-scrub (wasm)",
       "ms": 5.1566192749140916
     },
     {
@@ -91,14 +91,14 @@
       "suite": "HTML → Markdown",
       "page": "small (user comment)",
       "kb": 1,
-      "lib": "html-kit (native)",
+      "lib": "html-scrub (native)",
       "ms": 0.01658678797797292
     },
     {
       "suite": "HTML → Markdown",
       "page": "small (user comment)",
       "kb": 1,
-      "lib": "html-kit (wasm)",
+      "lib": "html-scrub (wasm)",
       "ms": 0.025662952011086256
     },
     {
@@ -119,14 +119,14 @@
       "suite": "HTML → Markdown",
       "page": "large (Wikipedia article)",
       "kb": 685,
-      "lib": "html-kit (native)",
+      "lib": "html-scrub (native)",
       "ms": 15.830039473684232
     },
     {
       "suite": "HTML → Markdown",
       "page": "large (Wikipedia article)",
       "kb": 685,
-      "lib": "html-kit (wasm)",
+      "lib": "html-scrub (wasm)",
       "ms": 21.934722231884074
     },
     {
@@ -147,14 +147,14 @@
       "suite": "HTML → Markdown",
       "page": "medium (MDN docs page)",
       "kb": 221,
-      "lib": "html-kit (native)",
+      "lib": "html-scrub (native)",
       "ms": 3.5871326563245884
     },
     {
       "suite": "HTML → Markdown",
       "page": "medium (MDN docs page)",
       "kb": 221,
-      "lib": "html-kit (wasm)",
+      "lib": "html-scrub (wasm)",
       "ms": 4.961008112211221
     },
     {

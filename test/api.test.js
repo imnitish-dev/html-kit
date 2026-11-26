@@ -1,7 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { createRequire } from 'node:module';
-import { sanitize, toMarkdown, backend } from 'html-kit';
+import { sanitize, toMarkdown, backend } from 'html-scrub';
 
 const XSS = [
   '<img src=x onerror=alert(1)>',
@@ -19,7 +19,7 @@ const XSS = [
 test(`backend is ${backend}`, () => {
   assert.ok(['native', 'wasm'].includes(backend));
   // CI sets this so a missing or broken native binary fails loudly instead of silently using WASM.
-  if (process.env.HTML_KIT_EXPECT) assert.equal(backend, process.env.HTML_KIT_EXPECT);
+  if (process.env.HTML_SCRUB_EXPECT) assert.equal(backend, process.env.HTML_SCRUB_EXPECT);
 });
 
 test('sanitize removes every XSS vector', () => {
@@ -65,6 +65,6 @@ test('toMarkdown', () => {
 });
 
 test('CommonJS require works too', () => {
-  const cjs = createRequire(import.meta.url)('html-kit');
+  const cjs = createRequire(import.meta.url)('html-scrub');
   assert.equal(cjs.sanitize('<b onclick="x">a</b>'), '<b>a</b>');
 });

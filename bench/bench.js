@@ -14,9 +14,9 @@ const root = fileURLToPath(new URL('..', import.meta.url));
 // Our two engines, loaded side by side.
 // Both go through the same public wrapper users get.
 const { wrap } = await import(`${root}lib/wrap.js`);
-const native = wrap(require(`${root}native/html-kit.${process.platform}-${process.arch}.node`));
-const wasmRaw = await import(`${root}wasm/html_kit.js`);
-wasmRaw.initSync({ module: fs.readFileSync(`${root}wasm/html_kit_bg.wasm`) });
+const native = wrap(require(`${root}native/html-scrub.${process.platform}-${process.arch}.node`));
+const wasmRaw = await import(`${root}wasm/html_scrub.js`);
+wasmRaw.initSync({ module: fs.readFileSync(`${root}wasm/html_scrub_bg.wasm`) });
 const wasm = wrap(wasmRaw);
 
 const DOMPurify = createDOMPurify(new JSDOM('').window);
@@ -33,7 +33,7 @@ const fixtures = {
 };
 for (const [name, url] of Object.entries(PAGES)) {
   const file = new URL(`fixtures/${name.split(' ')[0]}.html`, import.meta.url);
-  if (!fs.existsSync(file)) fs.writeFileSync(file, await (await fetch(url, { headers: { 'user-agent': 'html-kit-bench' } })).text());
+  if (!fs.existsSync(file)) fs.writeFileSync(file, await (await fetch(url, { headers: { 'user-agent': 'html-scrub-bench' } })).text());
   fixtures[name] = fs.readFileSync(file, 'utf8');
 }
 
@@ -47,14 +47,14 @@ function bench(fn, input, ms = 1500) {
 
 const SUITES = {
   'sanitize': {
-    'html-kit (native)': (h) => native.sanitize(h),
-    'html-kit (wasm)': (h) => wasm.sanitize(h),
+    'html-scrub (native)': (h) => native.sanitize(h),
+    'html-scrub (wasm)': (h) => wasm.sanitize(h),
     'sanitize-html': (h) => sanitizeHtml(h),
     'DOMPurify + jsdom': (h) => DOMPurify.sanitize(h),
   },
   'HTML → Markdown': {
-    'html-kit (native)': (h) => native.toMarkdown(h),
-    'html-kit (wasm)': (h) => wasm.toMarkdown(h),
+    'html-scrub (native)': (h) => native.toMarkdown(h),
+    'html-scrub (wasm)': (h) => wasm.toMarkdown(h),
     'turndown': (h) => turndown.turndown(h),
     'node-html-markdown': (h) => NodeHtmlMarkdown.translate(h),
   },
