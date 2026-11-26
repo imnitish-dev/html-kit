@@ -16,6 +16,7 @@ jobs:
   rust:
     name: Rust unit tests
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v7
       - uses: dtolnay/rust-toolchain@stable
@@ -24,6 +25,7 @@ jobs:
   audit:
     name: Vulnerability + license audit
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v7
       - uses: taiki-e/install-action@v2
@@ -40,6 +42,7 @@ jobs:
   native:
     name: Build ${{ matrix.target }}
     runs-on: ${{ matrix.host }}
+    timeout-minutes: 30
     strategy:
       fail-fast: false
       matrix:
@@ -57,7 +60,7 @@ jobs:
       - uses: dtolnay/rust-toolchain@stable
         with: { targets: '${{ matrix.target }}' }
       - if: matrix.flags == '-x'
-        uses: mlugg/setup-zig@v2
+        run: python3 -m pip install --user --break-system-packages ziglang # zig for cargo-zigbuild, from PyPI's CDN (setup-zig's mirrors can hang)
       - if: matrix.flags == '-x'
         uses: taiki-e/install-action@v2
         with: { tool: cargo-zigbuild }
@@ -72,6 +75,7 @@ jobs:
   wasm:
     name: Build WASM
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v7
       - uses: dtolnay/rust-toolchain@stable
@@ -91,6 +95,7 @@ jobs:
     name: Test ${{ matrix.host }} / Node ${{ matrix.node }}
     needs: [native, wasm]
     runs-on: ${{ matrix.host }}
+    timeout-minutes: 30
     strategy:
       fail-fast: false
       matrix:
@@ -118,6 +123,7 @@ jobs:
     name: Test Alpine (musl)
     needs: [native, wasm]
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     container: node:22-alpine
     steps:
       - uses: actions/checkout@v7
@@ -132,6 +138,7 @@ jobs:
     name: Test Bun
     needs: [native, wasm]
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v7
       - uses: oven-sh/setup-bun@v2
@@ -145,6 +152,7 @@ jobs:
     name: XSS suite (known payloads + fuzzing + Chromium)
     needs: [native, wasm]
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v7
       - uses: actions/setup-node@v7
@@ -163,6 +171,7 @@ jobs:
     name: npm pack
     needs: [rust, audit, test, test-musl, test-bun, security]
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v7
       - uses: actions/setup-node@v7
